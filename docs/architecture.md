@@ -24,7 +24,8 @@ flowchart LR
         PG[("PostgreSQL<br/>one database per service")]
         RD[("Redis")]
         KF[["Kafka (KRaft)"]]
-        OBJ[("Object storage<br/>(D6, pending)")]
+        OBJ[("Object storage, S3 API<br/>(SeaweedFS in dev)")]
+        EL[("Elasticsearch")]
         JG["Jaeger<br/>(OpenTelemetry)"]
     end
 
@@ -39,6 +40,9 @@ flowchart LR
     FS --- RD
     ES --- RD
     PS --- OBJ
+    Browser -. "presigned PUT" .-> OBJ
+    GW -- "/media/**" --> OBJ
+    SS --- EL
 ```
 
 ## 2. Components
@@ -48,10 +52,10 @@ flowchart LR
 | **pixora-gateway** | The only public entry point. Acts as the BFF: OIDC login with Keycloak, server-side sessions, CSRF protection, `TokenRelay` to services. Routes `/api/**` to services and `/` to the Angular app (same origin). | Sessions (Redis) |
 | **Keycloak** | Identity provider: sign-up, login, logout, forgot password, password storage, the Pixora login theme. Realm config is kept as code in this repo. | Users' credentials (its own database) |
 | **user-service** | Profiles (created on the first authenticated request) and the follow graph. | `user` database |
-| **post-service** | Photo posts (1–10 photos, caption, hashtags) and presigned upload URLs. | `post` database, object storage |
+| **post-service** | Photo posts (1–10 photos, caption, hashtags), presigned upload URLs, photo checks, metadata removal and resizing. See [media.md](media.md). | `post` database, object storage (`uploads`, `media` buckets) |
 | **feed-service** | Builds and serves home feeds. Fan-out on write into Redis first; a pull path for very popular accounts comes later. | Feed timelines (Redis) |
 | **engagement-service** | Likes and comments, and their counters. | `engagement` database, counters (Redis) |
-| **search-service** | Username autocomplete and hashtag search, built from events. | Search index (engine: D6, pending) |
+| **search-service** | Username autocomplete and hashtag search. A read model built from events, with no database of its own. See [search.md](search.md). | Elasticsearch indexes |
 | **pixora-web** | Angular SPA. Holds **no tokens**. Calls the gateway with the session cookie. | — |
 
 The service boundaries above are the starting point; the exact list of endpoints and events is set in `contracts/`.
@@ -83,17 +87,21 @@ Keycloak, with the gateway acting as a **BFF**. Tokens never reach the browser. 
 | engagement-service | Like and comment counters (cache; PostgreSQL is the truth) | `pixora:engagement:` |
 | gateway (later) | Rate limiting | `pixora:gateway:ratelimit:` |
 
-## 6. Technology versions
+## 6. Storage and search
+
+- **Photos:** the code talks only to the **S3 API** (AWS SDK v2). SeaweedFS runs in dev, Garage is the fallback, and the production store is chosen in D8. Uploads go straight from the browser to storage with presigned URLs. Workflow: [media.md](media.md). Decision: [ADR-0009](decisions/0009-s3-api-with-seaweedfs-in-dev.md).
+- **Search:** **Elasticsearch**, fed by events, rebuildable through alias swaps. Workflow: [search.md](search.md). Decision: [ADR-0010](decisions/0010-elasticsearch-for-search.md).
+
+## 7. Technology versions
 
 Java 25 LTS (virtual threads), Spring Boot 4.1.2 for the services, Spring Boot 4.0.9 + Spring Cloud 2025.1.4 for the gateway (until Spring Cloud 2026.0 is GA), Angular 22.2.4, Node 26 LTS. Infrastructure images are pinned to their latest stable versions when the Compose file is written. Decision: [ADR-0005](decisions/0005-technology-versions.md).
 
-## 7. Local environment notes
+## 8. Local environment notes
 
 - The dev laptop has ~23 GB RAM, 8 cores and **little free disk**, so keep images, Kafka retention and volumes small.
 - Ports **3000 and 8080 are already used** (Multica) on the dev laptop. Pixora's ports are set when the Compose file is written.
 
-## 8. Pending
+## 9. Pending
 
-- **D6:** object storage (MinIO) and the search engine (PostgreSQL full-text vs Elasticsearch/OpenSearch).
-- **D8:** deploy now or later.
+- **D8:** deploy now or later, and where (including the production object store and a CDN for `/media/**`).
 - Gateway flavour (reactive WebFlux vs Web MVC with virtual threads): to settle when the gateway is set up.

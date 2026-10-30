@@ -12,7 +12,9 @@ Each important decision is recorded as an ADR: the context, the decision, its co
 | [0006](0006-keycloak-with-gateway-bff.md) | Keycloak with the gateway as a BFF | Accepted | 2026-10-30 |
 | [0007](0007-kafka-kraft-with-transactional-outbox.md) | Kafka (KRaft) with a transactional outbox | Accepted | 2026-10-30 |
 | [0008](0008-redis.md) | Redis for sessions, feeds and counters | Accepted | 2026-10-30 |
+| [0009](0009-s3-api-with-seaweedfs-in-dev.md) | S3 API for photo storage, SeaweedFS in dev | Accepted | 2026-10-30 |
+| [0010](0010-elasticsearch-for-search.md) | Elasticsearch for search | Accepted | 2026-10-30 |
 
-Still open: object storage and search engine (D6), deployment (D8).
+Still open: deployment (D8).
 
 Template: [template.md](template.md).

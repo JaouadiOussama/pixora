@@ -28,4 +28,6 @@ This is the **hub repository**. It holds what all services share:
 1. [Architecture](docs/architecture.md)
 2. [Authentication workflow](docs/authentication.md)
 3. [Events and the transactional outbox](docs/events.md)
-4. [Decision records](docs/decisions/README.md)
+4. [Photo upload and serving](docs/media.md)
+5. [Search](docs/search.md)
+6. [Decision records](docs/decisions/README.md)

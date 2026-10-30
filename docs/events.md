@@ -35,7 +35,7 @@ sequenceDiagram
 ## 3. Guarantees and rules
 
 - **At-least-once delivery.** An event can arrive twice (for example after a relay crash between send and mark). So:
-- **Consumers are idempotent.** Each consumer keeps a `processed_event` table keyed by `eventId` and updates it in the same transaction as its own change.
+- **Consumers are idempotent.** Each consumer keeps a `processed_event` table keyed by `eventId` and updates it in the same transaction as its own change. The exception is a consumer whose writes are idempotent by nature (set a document to a state, or delete it), like search-service; see [search.md](search.md).
 - **Order per aggregate.** The Kafka key is the aggregate id (post id, user id...), so all events for one aggregate go to the same partition, in order. There is no global order.
 - **Failures:** retries with backoff, then a dead-letter topic `<topic>.DLT`. A message in a DLT is a bug to investigate, not something to ignore.
 - **Cleanup:** published outbox rows older than 7 days are deleted by a scheduled job.
