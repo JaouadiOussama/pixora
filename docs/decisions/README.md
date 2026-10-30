@@ -14,7 +14,6 @@ Each important decision is recorded as an ADR: the context, the decision, its co
 | [0008](0008-redis.md) | Redis for sessions, feeds and counters | Accepted | 2026-10-30 |
 | [0009](0009-s3-api-with-seaweedfs-in-dev.md) | S3 API for photo storage, SeaweedFS in dev | Accepted | 2026-10-30 |
 | [0010](0010-elasticsearch-for-search.md) | Elasticsearch for search | Accepted | 2026-10-30 |
-
-Still open: deployment (D8).
+| [0011](0011-deploy-later-build-deployable-now.md) | Deploy later, build deployable images from the start | Accepted | 2026-10-30 |
 
 Template: [template.md](template.md).

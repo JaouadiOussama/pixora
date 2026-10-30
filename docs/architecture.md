@@ -101,7 +101,10 @@ Java 25 LTS (virtual threads), Spring Boot 4.1.2 for the services, Spring Boot 4
 - The dev laptop has ~23 GB RAM, 8 cores and **little free disk**, so keep images, Kafka retention and volumes small.
 - Ports **3000 and 8080 are already used** (Multica) on the dev laptop. Pixora's ports are set when the Compose file is written.
 
-## 9. Pending
+## 9. Deployment
 
-- **D8:** deploy now or later, and where (including the production object store and a CDN for `/media/**`).
+Not deployed yet. Every repo builds multi-arch images (amd64 and arm64) to GitHub Container Registry from stage 2, and Pixora is deployed at the feed milestone. Workflow and go-live checklist: [deployment.md](deployment.md). Decision: [ADR-0011](decisions/0011-deploy-later-build-deployable-now.md).
+
+## 10. Pending
+
 - Gateway flavour (reactive WebFlux vs Web MVC with virtual threads): to settle when the gateway is set up.

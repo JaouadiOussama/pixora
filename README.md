@@ -30,4 +30,5 @@ This is the **hub repository**. It holds what all services share:
 3. [Events and the transactional outbox](docs/events.md)
 4. [Photo upload and serving](docs/media.md)
 5. [Search](docs/search.md)
-6. [Decision records](docs/decisions/README.md)
+6. [Build, release and deployment](docs/deployment.md)
+7. [Decision records](docs/decisions/README.md)
