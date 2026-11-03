@@ -31,4 +31,10 @@ This is the **hub repository**. It holds what all services share:
 4. [Photo upload and serving](docs/media.md)
 5. [Search](docs/search.md)
 6. [Build, release and deployment](docs/deployment.md)
-7. [Decision records](docs/decisions/README.md)
+7. [Engineering guidelines](docs/engineering-guidelines.md): branches, pull requests, tests, code quality, CI checks
+8. [Conventions](docs/conventions.md): names, code layout, API rules, Angular patterns
+9. [Decision records](docs/decisions/README.md)
+
+## License
+
+[Apache License 2.0](LICENSE). See [NOTICE](NOTICE).

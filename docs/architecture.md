@@ -1,6 +1,6 @@
 # Architecture
 
-Status: **stage 1, in progress.** Sections marked *pending* depend on decisions that are still open (see [decisions](decisions/README.md)).
+Status: **stage 1 complete.** The few points still open are listed in [section 10](#10-pending). How code is written and merged: [engineering-guidelines.md](engineering-guidelines.md) and [conventions.md](conventions.md).
 
 ## 1. Overview
 
@@ -69,7 +69,8 @@ The service boundaries above are the starting point; the exact list of endpoints
 - **No shared code library.** Services share **contracts** (OpenAPI, AsyncAPI) from this hub, never Java code.
 - **Contract tests** check every service against the contracts in this hub.
 - **Observability from day 1:** OpenTelemetry traces to Jaeger. Trace context is also passed in Kafka headers, so one trace follows a request through the events it causes.
-- **Tests:** unit and integration tests on the backend and the frontend for every change.
+- **Tests:** unit and integration tests on the backend and the frontend for every change ([test strategy](engineering-guidelines.md#4-testing)).
+- **APIs:** contract-first, versioned under `/api/v1`, RFC 9457 errors, cursor pagination ([API conventions](conventions.md#4-api-conventions)).
 
 ## 4. Authentication
 
@@ -108,3 +109,4 @@ Not deployed yet. Every repo builds multi-arch images (amd64 and arm64) to GitHu
 ## 10. Pending
 
 - Gateway flavour (reactive WebFlux vs Web MVC with virtual threads): to settle when the gateway is set up.
+- Database migration tool: to settle in stage 2.

@@ -46,11 +46,11 @@ sequenceDiagram
 
 ## 4. Queries
 
-| Endpoint (through the gateway, `/api/search/...`) | What it does |
+| Endpoint (public path, through the gateway) | What it does |
 |---|---|
-| `GET /search/users?q=` | Username autocomplete: prefix match, small typo tolerance, ranked by match quality then follower count |
-| `GET /search/hashtags?q=` | Hashtag autocomplete, with the number of posts for each |
-| `GET /search/hashtags/{tag}/posts` | Post ids for a hashtag, newest first, paged. The app then loads the posts from post-service |
+| `GET /api/v1/search/users?q=` | Username autocomplete: prefix match, small typo tolerance, ranked by match quality then follower count |
+| `GET /api/v1/search/hashtags?q=` | Hashtag autocomplete, with the number of posts for each |
+| `GET /api/v1/search/hashtags/{tag}/posts` | Post ids for a hashtag, newest first, cursor-paged. The app then loads the posts from post-service |
 
 ## 5. Rebuilding an index
 

@@ -26,7 +26,7 @@ sequenceDiagram
     participant S3 as Object storage
 
     U->>W: Pick 1 to 10 photos, write a caption
-    W->>G: POST /api/posts/uploads (count, content types, sizes)
+    W->>G: POST /api/v1/posts/uploads (count, content types, sizes)
     G->>P: Same, with Bearer JWT
     P->>P: Check count (1 to 10), types and sizes
     P->>DB: Insert upload records (status PENDING)
@@ -36,7 +36,7 @@ sequenceDiagram
         W->>S3: PUT the file to its presigned URL (direct, CORS)
         S3-->>W: 200
     end
-    W->>G: POST /api/posts (caption, uploadIds)
+    W->>G: POST /api/v1/posts (caption, uploadIds, header Idempotency-Key)
     G->>P: Same, with Bearer JWT
     P->>DB: Check the uploads belong to this user and are PENDING
     par For each photo

@@ -47,7 +47,7 @@ sequenceDiagram
     G->>G: Check state and ID token, change session id
     G->>R: Store tokens in the session
     G-->>W: 302 to the app, Set-Cookie SESSION (HttpOnly, SameSite=Lax)
-    W->>G: GET /api/me
+    W->>G: GET /api/v1/me
     G-->>W: Current user (see section 5)
 ```
 
@@ -67,7 +67,7 @@ sequenceDiagram
     participant K as Keycloak
     participant S as A service
 
-    W->>G: POST /api/posts (cookie SESSION, header X-XSRF-TOKEN)
+    W->>G: POST /api/v1/posts (cookie SESSION, header X-XSRF-TOKEN)
     G->>G: Check the CSRF token
     G->>R: Load the session
     alt Access token expired
@@ -75,7 +75,7 @@ sequenceDiagram
         K-->>G: New access token (and refresh token)
         G->>R: Update the session
     end
-    G->>S: POST /posts with Authorization Bearer JWT (Cookie header removed)
+    G->>S: POST /v1/posts with Authorization Bearer JWT (Cookie header removed)
     S->>S: Validate signature (Keycloak JWKS, cached), iss, aud, exp
     S-->>G: 201 Created
     G-->>W: 201 Created
@@ -89,7 +89,7 @@ Rules:
 
 ## 5. Current user and first-time profile creation
 
-`/api/me` is routed to user-service (`GET /users/me`). This is also how a profile gets created: there is no separate "create profile" step after sign-up.
+`/api/v1/me` is routed to user-service (`GET /v1/users/me`). This is also how a profile gets created: there is no separate "create profile" step after sign-up.
 
 ```mermaid
 sequenceDiagram
@@ -99,8 +99,8 @@ sequenceDiagram
     participant U as user-service
     participant DB as user database
 
-    W->>G: GET /api/me
-    G->>U: GET /users/me with Bearer JWT
+    W->>G: GET /api/v1/me
+    G->>U: GET /v1/users/me with Bearer JWT
     U->>DB: Find profile by sub (the Keycloak user id)
     alt No profile yet
         U->>DB: Insert profile from claims sub, preferred_username, email (insert-if-absent)
@@ -118,7 +118,7 @@ sequenceDiagram
 1. On the Keycloak login page the user clicks **Register** (user registration is enabled in the realm).
 2. Keycloak shows the Pixora-themed registration form and creates the account.
 3. Keycloak signs the user in and redirects back to the gateway callback. From here it is the same as login, steps 7–15.
-4. The first `/api/me` creates the profile (section 5).
+4. The first `/api/v1/me` creates the profile (section 5).
 
 ## 7. Forgot password
 
