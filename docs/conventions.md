@@ -69,7 +69,7 @@ Rules:
 - **Constructor injection only**, with `final` fields. No field injection (`@Autowired` on fields).
 - **Request validation** with Bean Validation annotations on request records and `@Valid` in controllers.
 - **Configuration comes from environment variables** through `@ConfigurationProperties` records. No environment-specific values in the code or the image ([deployment.md](deployment.md)).
-- **Database schema changes go through versioned migrations** (the tool is chosen in stage 2). Never through Hibernate's automatic schema update.
+- **Database schema changes go through versioned Flyway migrations**: plain SQL, `V<NNN>__<what_it_does>.sql`, never edited once applied; Hibernate only validates (`ddl-auto=validate`). See [ADR-0019](decisions/0019-flyway-database-migrations.md).
 - **Synchronous calls to another service** always go through Resilience4j and forward the user's JWT ([architecture.md](architecture.md#3-cross-cutting-rules)).
 
 ### Test names

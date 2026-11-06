@@ -95,7 +95,7 @@ Keycloak, with the gateway acting as a **BFF**. Tokens never reach the browser. 
 
 ## 7. Technology versions
 
-Java 25 LTS (virtual threads), Spring Boot 4.1.2 for the services, Spring Boot 4.0.9 + Spring Cloud 2025.1.4 for the gateway (until Spring Cloud 2026.0 is GA), Angular 22.2.4, Node 26 LTS. Infrastructure images are pinned to their latest stable versions when the Compose file is written. Decision: [ADR-0005](decisions/0005-technology-versions.md).
+Java 25 LTS (virtual threads), Spring Boot 4.1.2 for the services (Spring MVC on virtual threads, Flyway migrations: [ADR-0019](decisions/0019-flyway-database-migrations.md)), Spring Boot 4.0.9 + Spring Cloud 2025.1.4 for the gateway (until Spring Cloud 2026.0 is GA; reactive, on WebFlux: [ADR-0018](decisions/0018-reactive-gateway-webflux.md)), Angular 22.2.4, Node 26 LTS. Infrastructure images are pinned to their latest stable versions when the Compose file is written. Decision: [ADR-0005](decisions/0005-technology-versions.md).
 
 ## 8. Local environment notes
 
@@ -106,7 +106,3 @@ Java 25 LTS (virtual threads), Spring Boot 4.1.2 for the services, Spring Boot 4
 
 Not deployed yet. Every repo builds multi-arch images (amd64 and arm64) to GitHub Container Registry from stage 2, and Pixora is deployed at the feed milestone. Workflow and go-live checklist: [deployment.md](deployment.md). Decision: [ADR-0011](decisions/0011-deploy-later-build-deployable-now.md).
 
-## 10. Pending
-
-- Gateway flavour (reactive WebFlux vs Web MVC with virtual threads): to settle when the gateway is set up.
-- Database migration tool: to settle in stage 2.

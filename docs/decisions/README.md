@@ -21,5 +21,7 @@ Each important decision is recorded as an ADR: the context, the decision, its co
 | [0015](0015-package-by-feature.md) | Package by feature | Accepted | 2026-11-02 |
 | [0016](0016-api-conventions.md) | API conventions | Accepted | 2026-11-03 |
 | [0017](0017-apache-2-license.md) | Apache License 2.0 | Accepted | 2026-11-03 |
+| [0018](0018-reactive-gateway-webflux.md) | Reactive gateway (Spring Cloud Gateway on WebFlux) | Accepted | 2026-11-06 |
+| [0019](0019-flyway-database-migrations.md) | Flyway for database migrations | Accepted | 2026-11-06 |
 
 Template: [template.md](template.md).
