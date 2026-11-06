@@ -22,15 +22,18 @@ You are the engineer who will implement this sub-issue. Before writing any code,
 
    ```markdown
    ## Grooming
+
    **Goal:** <one sentence>
    **Out of scope:** <...>
    **Branch:** feat/<KEY>-<slug>
 
    ### Tests to write
+
    - [ ] `ProfileServiceTest.shouldCreateProfileOnFirstRequest` (unit)
    - [ ] `MeControllerIT.shouldReturnTheSameProfileOnSecondRequest` (integration)
 
    ### Steps
+
    1. Add migration `V002__create_profile_table.sql`. **Done when:** `ProfileRepositoryIT` passes against Testcontainers PostgreSQL.
    2. ... **Done when:** ...
 

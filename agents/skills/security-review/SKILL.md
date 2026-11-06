@@ -14,10 +14,12 @@ The Code Reviewer mentions you when a PR touches authentication, authorization, 
 ## Checklist
 
 **Access control** (the most common real-world flaw, OWASP Top 10 A01)
+
 - Every endpoint checks that the caller may act on **this** resource (owner checks on update and delete; private data never in another user's response). IDs being unguessable UUIDs is not access control.
 - Checks happen in the service, not only in the gateway or the UI. Deny by default.
 
 **Authentication and sessions** (ADR-0006)
+
 - Everything in `docs/authentication.md` section 9 holds: tokens stay in the gateway; the browser only has the `SESSION` cookie (`HttpOnly`, `Secure` outside localhost, `SameSite=Lax`), and the session id changes at login.
 - CSRF protection is on for every state-changing request; `/api/**` answers `401`, never a redirect.
 - Services validate the JWT: signature, `iss`, `aud` = `pixora-api`, `exp`. No endpoint trusts a user id sent by the client; the user is the token's subject.
@@ -25,39 +27,44 @@ The Code Reviewer mentions you when a PR touches authentication, authorization, 
 - Logout ends the gateway session and the Keycloak session.
 
 **Input and output**
+
 - All input validated (type, length, format) at the API; queries are parameterized (JPA / Spring Data, never string-built SQL or JPQL).
 - No user input reaches a file path, a shell command, a URL the server fetches (SSRF) or a log line unescaped.
 - Error responses never contain stack traces, SQL, class names or internal hosts (RFC 9457 handler).
 - Angular: no `innerHTML` with user content or `bypassSecurityTrust*`; captions and comments are rendered as text.
 
 **Uploads** (`docs/media.md`)
+
 - Presigned URLs: one object, short expiry, the exact content type and size limit.
 - The server verifies the real file type from its bytes (not the extension or the declared type), enforces the size limit, re-encodes the image and strips metadata (EXIF, GPS) before it is served.
 - Uploaded files are never served from the upload bucket and never executed.
 
 **Secrets, data and logging**
+
 - No secret in code, config files, images, test fixtures or logs. Secrets come from environment variables.
 - Logs never contain tokens, passwords, cookies, full emails or request bodies with personal data.
 - Personal data stored only where the plan needs it.
 
 **Transport and headers**
+
 - Gateway response headers: `Content-Security-Policy`, `Strict-Transport-Security` (when HTTPS), `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `frame-ancestors 'none'`.
 - CORS: none needed (same origin); any CORS config is a finding unless the plan explains it.
 - Rate limits on login, sign-up, password reset and uploads (gateway, Redis).
 
 **Dependencies**
+
 - A new dependency is actively maintained, has no known vulnerability (dependency review, Trivy), and has a license compatible with Apache 2.0.
 
 ## Findings
 
 Post them on the PR in the code-review-task format, each with a **severity**:
 
-| Severity | Meaning | Effect |
-|---|---|---|
-| Critical | Exploitable now: data of other users, account takeover, remote code execution | Blocking; mention the owner |
-| High | Exploitable with some conditions, or a missing core control (auth, access check) | Blocking |
-| Medium | Defence in depth missing, limited impact | Blocking unless the Tech Lead accepts it with an issue |
-| Low | Hardening, best practice | Suggestion; open an issue if worth it |
+| Severity | Meaning                                                                          | Effect                                                 |
+| -------- | -------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Critical | Exploitable now: data of other users, account takeover, remote code execution    | Blocking; mention the owner                            |
+| High     | Exploitable with some conditions, or a missing core control (auth, access check) | Blocking                                               |
+| Medium   | Defence in depth missing, limited impact                                         | Blocking unless the Tech Lead accepts it with an issue |
+| Low      | Hardening, best practice                                                         | Suggestion; open an issue if worth it                  |
 
 Give the attack in one or two sentences ("user A can delete user B's comment by sending ..."), the ASVS requirement or cheat sheet it breaks, and the fix.
 

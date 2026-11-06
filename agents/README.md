@@ -2,48 +2,70 @@
 
 Pixora is built by a team of AI agents running in a self-hosted [Multica](https://multica.ai) workspace, with the repository owner approving what gets built and reviewing what merges. This folder is the team's source of truth: the skills each agent follows and (soon) each agent's instructions. They are reviewed and versioned like code, then loaded into Multica.
 
-The method follows the *AI for Software Engineers Guide* (Yehia Tech): plan the project in `docs/`, write rules (`CLAUDE.md`) and skills once, run every task through the same skills in the same order, and keep a person responsible for what merges.
+The method follows the _AI for Software Engineers Guide_ (Yehia Tech): plan the project in `docs/`, write rules (`CLAUDE.md`) and skills once, run every task through the same skills in the same order, and keep a person responsible for what merges.
 
 ## 1. The team
 
-| Agent | Model / effort | Role |
-|---|---|---|
-| Product Owner | Opus, high | Turns the owner's requests (Telegram or the board) into user stories with acceptance criteria. Never writes code or decides architecture. |
-| Tech Lead | Sonnet, high | Squad leader. Plans approved stories into PR-sized sub-issues, assigns them, moves the board. |
-| Architect | Opus, high | Consulted by the Tech Lead when a plan needs a new decision. Writes ADRs. |
-| Backend Engineer | Sonnet, high | Implements service, gateway and hub contract tasks. |
-| Frontend Engineer | Sonnet, high | Implements pixora-web tasks. |
-| DBA | Sonnet, high | On demand: reviews every migration, helps design schemas. |
-| Security Engineer | Opus, high | On demand: reviews security-sensitive changes, keeps the threat models in `docs/security/`. |
-| Code Reviewer | Opus, high | Reviews every PR against its plan, the rules and the docs. |
-| Senior Backend / Frontend | Opus, high | Backup: takes over a single task after two failed review rounds. |
+| Agent                     | Model / effort | Role                                                                                                                                                          |
+| ------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Product Owner             | Opus, high     | Turns the owner's requests (Telegram or the board) into user stories with acceptance criteria. Never writes code or decides architecture.                     |
+| Tech Lead                 | Sonnet, high   | Squad leader. Plans approved stories into PR-sized sub-issues, assigns them, moves the board.                                                                 |
+| Architect                 | Opus, high     | Consulted by the Tech Lead when a plan needs a new decision. Writes ADRs.                                                                                     |
+| Backend Engineer          | Sonnet, high   | Implements service, gateway and hub contract tasks.                                                                                                           |
+| Frontend Engineer         | Sonnet, high   | Implements pixora-web tasks.                                                                                                                                  |
+| DBA                       | Sonnet, high   | On demand: reviews every migration, helps design schemas.                                                                                                     |
+| Security Engineer         | Opus, high     | On demand: reviews security-sensitive changes, keeps the threat models in `docs/security/`.                                                                   |
+| Code Reviewer             | Opus, high     | Reviews every PR against its plan, the rules and the docs.                                                                                                    |
+| QA Engineer               | Sonnet, high   | Checks every finished story on the running system against its acceptance criteria, owns the Playwright end-to-end tests, triages nightly end-to-end failures. |
+| Senior Backend / Frontend | Opus, high     | Backup: takes over a single task after two failed review rounds.                                                                                              |
 
 Effort is never below high. The CI merge gate is a GitHub Action, not an agent.
 
-## 2. How a task moves
+## 2. How work moves
+
+Two kinds of issues move on the board: the **story** (what the owner asked for) and its **sub-issues** (one per PR).
 
 ```mermaid
 flowchart LR
-    B["Backlog<br/>PO writes the story"] --> R["Ready<br/>owner approves"]
-    R --> P["Planning<br/>Tech Lead: plan-task"]
-    P --> G["Grooming<br/>engineer: groom-task"]
-    G --> I["In progress<br/>engineer: implement-task"]
-    I --> V["Review<br/>Reviewer: code-review-task<br/>(+ Security, + DBA)"]
-    V -- "changes requested<br/>(max 2 rounds)" --> I
-    V -- "approved" --> M["Merge<br/>merge gate or owner"]
-    M --> D["Done<br/>engineer: finalize-task"]
+    subgraph story ["Story"]
+        B["Backlog<br/>PO: write-story"] --> R["Ready<br/>owner approves"]
+        R --> P["Planning<br/>Tech Lead: plan-task<br/>(+ Architect: write-adr)"]
+        P --> SI["In progress<br/>sub-issues run, stage by stage"]
+        SI --> A["Acceptance<br/>QA: acceptance-test"]
+        A -- "bugs found" --> SI
+        A -- "passed" --> SD["Done"]
+    end
+    subgraph sub ["Each sub-issue (one PR)"]
+        G["Grooming<br/>engineer: groom-task"] --> I["In progress<br/>engineer: implement-task"]
+        I --> V["Review<br/>Reviewer: code-review-task<br/>(+ Security, + DBA)"]
+        V -- "changes requested<br/>(max 2 rounds)" --> I
+        V -- "approved" --> M["Merge<br/>merge gate or owner"]
+        M --> D["Done<br/>engineer: finalize-task"]
+    end
+    P -. "creates" .-> G
+    D -. "last stage done" .-> A
 ```
 
-| Column | Owner | Skill | Leaves the column when |
-|---|---|---|---|
-| Backlog | Product Owner | | The owner approves the story |
-| Ready | Tech Lead | | Planning starts |
-| Planning | Tech Lead (+ Architect) | [plan-task](skills/plan-task/SKILL.md) | Sub-issues exist; the owner approved the plan if it creates an ADR or changes a contract |
-| Grooming | Engineer | [groom-task](skills/groom-task/SKILL.md) | The task has steps with success criteria and fits in one PR (≤ 400 lines) |
-| In progress | Engineer | [implement-task](skills/implement-task/SKILL.md) | The PR is open and CI is green |
-| Review | Code Reviewer | [code-review-task](skills/code-review-task/SKILL.md) | Approved (label `ai-approved`) or sent back |
-| Merge | Merge gate / owner | | The PR is merged |
-| Done | Engineer | [finalize-task](skills/finalize-task/SKILL.md) | Follow-ups recorded, docs and lessons handled |
+**A story:**
+
+| Column      | Owner                   | Skill                                                                          | Leaves the column when                                                                   |
+| ----------- | ----------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| Backlog     | Product Owner           | [write-story](skills/write-story/SKILL.md)                                     | The owner approves the story                                                             |
+| Ready       | Tech Lead               |                                                                                | Planning starts                                                                          |
+| Planning    | Tech Lead (+ Architect) | [plan-task](skills/plan-task/SKILL.md), [write-adr](skills/write-adr/SKILL.md) | Sub-issues exist; the owner approved the plan if it creates an ADR or changes a contract |
+| In progress | Tech Lead               |                                                                                | Every sub-issue of every stage is Done                                                   |
+| Acceptance  | QA Engineer             | [acceptance-test](skills/acceptance-test/SKILL.md)                             | Every acceptance criterion passed on the running system, or bugs were filed and fixed    |
+| Done        |                         |                                                                                |                                                                                          |
+
+**A sub-issue:**
+
+| Column      | Owner              | Skill                                                | Leaves the column when                                                    |
+| ----------- | ------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------- |
+| Grooming    | Engineer           | [groom-task](skills/groom-task/SKILL.md)             | The task has steps with success criteria and fits in one PR (≤ 400 lines) |
+| In progress | Engineer           | [implement-task](skills/implement-task/SKILL.md)     | The PR is open and CI is green                                            |
+| Review      | Code Reviewer      | [code-review-task](skills/code-review-task/SKILL.md) | Approved (label `ai-approved`) or sent back                               |
+| Merge       | Merge gate / owner |                                                      | The PR is merged                                                          |
+| Done        | Engineer           | [finalize-task](skills/finalize-task/SKILL.md)       | Follow-ups recorded, docs and lessons handled                             |
 
 **The owner's checkpoints:**
 
@@ -57,31 +79,35 @@ flowchart LR
 
 Each skill is a folder with a `SKILL.md`: a name, a description that says when to use it, and the steps. Multica writes the skills bound to an agent into `.claude/skills/` before each run.
 
-**Workflow skills** (one per stage, as in the guide):
+**Workflow skills** (one per stage, as in the guide, plus the stages before and after):
 
-| Skill | Used by | Does |
-|---|---|---|
-| [plan-task](skills/plan-task/SKILL.md) | Tech Lead | Reads the story and the docs, writes the plan, creates one sub-issue per PR |
-| [groom-task](skills/groom-task/SKILL.md) | Engineers | Splits a sub-issue into small steps, each with a success criterion; checks the size |
-| [implement-task](skills/implement-task/SKILL.md) | Engineers | Test-first, step by step; format, lint, tests; opens the PR; handles review rework |
-| [code-review-task](skills/code-review-task/SKILL.md) | Code Reviewer | Reviews the diff against the plan, the rules and the docs; approves or sends back |
-| [finalize-task](skills/finalize-task/SKILL.md) | Engineers | After the merge: checks `main`, records follow-ups, docs and lessons, closes the task |
+| Skill                                                | Used by       | Does                                                                                    |
+| ---------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------- |
+| [write-story](skills/write-story/SKILL.md)           | Product Owner | Turns a request into a user story with Given/When/Then acceptance criteria              |
+| [write-adr](skills/write-adr/SKILL.md)               | Architect     | Records a decision a plan needs, with its alternatives                                  |
+| [plan-task](skills/plan-task/SKILL.md)               | Tech Lead     | Reads the story and the docs, writes the plan, creates one sub-issue per PR             |
+| [groom-task](skills/groom-task/SKILL.md)             | Engineers     | Splits a sub-issue into small steps, each with a success criterion; checks the size     |
+| [implement-task](skills/implement-task/SKILL.md)     | Engineers     | Test-first, step by step; format, lint, tests; opens the PR; handles review rework      |
+| [code-review-task](skills/code-review-task/SKILL.md) | Code Reviewer | Reviews the diff against the plan, the rules and the docs; approves or sends back       |
+| [finalize-task](skills/finalize-task/SKILL.md)       | Engineers     | After the merge: checks `main`, records follow-ups, docs and lessons, closes the task   |
+| [acceptance-test](skills/acceptance-test/SKILL.md)   | QA Engineer   | Checks the finished story on the running system, files bugs, keeps the end-to-end tests |
 
 **Role skills** (knowledge, used alongside the workflow skills):
 
-| Skill | Used by |
-|---|---|
-| [spring-backend](skills/spring-backend/SKILL.md) | Backend engineers, Reviewer |
-| [angular-frontend](skills/angular-frontend/SKILL.md) | Frontend engineers, Reviewer |
-| [postgres-flyway](skills/postgres-flyway/SKILL.md) | DBA, backend engineers, Reviewer |
-| [security-review](skills/security-review/SKILL.md) | Security Engineer, Reviewer |
-| [contract-first](skills/contract-first/SKILL.md) | Everyone who touches an API or event |
+| Skill                                                | Used by                              |
+| ---------------------------------------------------- | ------------------------------------ |
+| [spring-backend](skills/spring-backend/SKILL.md)     | Backend engineers, Reviewer          |
+| [angular-frontend](skills/angular-frontend/SKILL.md) | Frontend engineers, Reviewer         |
+| [postgres-flyway](skills/postgres-flyway/SKILL.md)   | DBA, backend engineers, Reviewer     |
+| [security-review](skills/security-review/SKILL.md)   | Security Engineer, Reviewer          |
+| [contract-first](skills/contract-first/SKILL.md)     | Everyone who touches an API or event |
 
 ## 4. Where this differs from the guide, and why
 
 - **The PR is opened by implement-task, not finalize-task.** CI and the review run on the PR, so it has to exist before review. finalize-task runs after the merge instead.
 - **The merge is done by a deterministic merge gate, not by an agent.** Low-risk PRs merge automatically when every check passes and the Reviewer approved; everything else waits for the owner, who uses the guide's "own it" checklist (posted on the PR by the gate).
 - **Plans are approved by the owner only when they create an ADR or change a contract**, instead of every plan. Stories are always approved, so nothing gets built that the owner didn't ask for.
+- **A QA stage after the last PR.** The guide reviews each change; Pixora also checks each finished story as a whole on the running system, because a story spans several PRs and repos.
 
 ## 5. Rules for every agent
 
@@ -95,16 +121,17 @@ Each skill is a folder with a `SKILL.md`: a name, a description that says when t
 
 The columns are custom statuses in the Multica workspace. Their keys, used by the skills:
 
-| Column | Status key |
-|---|---|
-| Backlog | `backlog` |
-| Ready | `todo` |
-| Planning | `planning` |
-| Grooming | `grooming` |
-| In progress | `in_progress` |
-| Review | `in_review` |
-| Merge | `merging` |
-| Done | `done` |
-| Blocked (any stage) | `blocked` |
+| Column              | Status key    |
+| ------------------- | ------------- |
+| Backlog             | `backlog`     |
+| Ready               | `todo`        |
+| Planning            | `planning`    |
+| Grooming            | `grooming`    |
+| In progress         | `in_progress` |
+| Review              | `in_review`   |
+| Merge               | `merging`     |
+| Acceptance          | `acceptance`  |
+| Done                | `done`        |
+| Blocked (any stage) | `blocked`     |
 
-`planning`, `grooming` and `merging` are created when the board is set up; the others are Multica's built-in keys.
+`planning`, `grooming`, `merging` and `acceptance` are created when the board is set up; the others are Multica's built-in keys.

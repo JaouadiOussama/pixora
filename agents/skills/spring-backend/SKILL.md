@@ -39,14 +39,14 @@ Java 25, Spring Boot 4.1 (gateway: 4.0 + Spring Cloud 2025.1), Maven wrapper (`.
 
 ## Testing
 
-| Layer | How | Name |
-|---|---|---|
-| Unit | Plain JUnit + AssertJ + Mockito, no Spring | `*Test` |
-| Web slice | `@WebMvcTest` + MockMvc (gateway: `WebTestClient`) | `*Test` |
-| JPA slice | `@DataJpaTest` with Testcontainers PostgreSQL | `*Test` |
-| Integration | `@SpringBootTest` + Testcontainers + `@ServiceConnection`, singleton containers, Awaitility for async | `*IT` |
-| Contract | Responses / events validated against the hub's OpenAPI / AsyncAPI | `*IT` |
-| Architecture | ArchUnit rules from conventions section 2 | `*Test` |
+| Layer        | How                                                                                                   | Name    |
+| ------------ | ----------------------------------------------------------------------------------------------------- | ------- |
+| Unit         | Plain JUnit + AssertJ + Mockito, no Spring                                                            | `*Test` |
+| Web slice    | `@WebMvcTest` + MockMvc (gateway: `WebTestClient`)                                                    | `*Test` |
+| JPA slice    | `@DataJpaTest` with Testcontainers PostgreSQL                                                         | `*Test` |
+| Integration  | `@SpringBootTest` + Testcontainers + `@ServiceConnection`, singleton containers, Awaitility for async | `*IT`   |
+| Contract     | Responses / events validated against the hub's OpenAPI / AsyncAPI                                     | `*IT`   |
+| Architecture | ArchUnit rules from conventions section 2                                                             | `*Test` |
 
 - Test names: `shouldDoXWhenY()`, body in given / when / then blocks.
 - Real engines only (never H2). Each test creates its own data.
