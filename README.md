@@ -34,8 +34,9 @@ This is the **hub repository**. It holds what all services share:
 6. [Build, release and deployment](docs/deployment.md)
 7. [Engineering guidelines](docs/engineering-guidelines.md): branches, pull requests, tests, code quality, CI checks
 8. [Conventions](docs/conventions.md): names, code layout, API rules, Angular patterns
-9. [Decision records](docs/decisions/README.md)
-10. [The AI team and its skills](agents/README.md)
+9. [Merge gate](docs/merge-gate.md): who approves a PR, what merges automatically, what needs the owner
+10. [Decision records](docs/decisions/README.md)
+11. [The AI team and its skills](agents/README.md)
 
 ## License
 

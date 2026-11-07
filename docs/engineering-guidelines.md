@@ -25,7 +25,7 @@ flowchart TD
     L --> M["Issue moves to Done"]
 ```
 
-The review loop, the agents' roles and the merge gate (which PRs can merge automatically and which need a person) are set in stage 2. The size rule in section 3 already feeds the gate: a PR over 400 lines never merges automatically.
+The review loop and the agents' roles are in [agents/README.md](../agents/README.md). Which PRs merge automatically and which need the owner is decided by the [merge gate](merge-gate.md) ([ADR-0020](decisions/0020-merge-gate.md)).
 
 ## 2. Branches and commits
 
@@ -76,8 +76,8 @@ Size = lines added + lines deleted, **tests included**. Generated code (for exam
 | Size | What happens |
 |---|---|
 | **≤ 400 lines** | Normal. Can merge automatically if every other gate passes. |
-| **401–800 lines** | CI adds the `size/L` label. Never merges automatically; the owner reviews and merges it by hand. |
-| **> 800 lines** | CI fails. The PR must be split. The only exception is the owner merging with admin bypass, for rare cases such as a project scaffold or a mass rename. |
+| **401–800 lines** | CI adds the `size/L` label. Never merges automatically; it needs the owner's approval ([merge gate](merge-gate.md)). |
+| **> 800 lines** | CI fails. The PR must be split. In rare justified cases (a project scaffold, a mass rename) the owner temporarily switches off the size check in the ruleset ([ADR-0020](decisions/0020-merge-gate.md)). |
 
 Why: review quality drops quickly as diffs grow. Google's engineering practices treat ~100 lines as a reasonable change and ~1,000 as usually too large, and the SmartBear/Cisco code review study found reviews lose effectiveness beyond 200–400 lines.
 
@@ -190,6 +190,7 @@ Formatting is done by tools and is **never discussed in review**.
 | Code scanning | CodeQL | A new alert of high or critical severity |
 | New dependencies | GitHub dependency review | A newly added dependency has a known vulnerability |
 | Container image | Trivy | A fixable vulnerability of high or critical severity |
+| **Merge gate** (runs last) | `merge-gate` ([merge-gate.md](merge-gate.md)) | Required App reviews are missing, `main` is red, or the PR needs the owner and the owner hasn't approved yet |
 
 Also on, outside the PR checks:
 

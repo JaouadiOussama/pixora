@@ -15,7 +15,7 @@ Each important decision is recorded as an ADR: the context, the decision, its co
 | [0009](0009-s3-api-with-seaweedfs-in-dev.md) | S3 API for photo storage, SeaweedFS in dev | Accepted | 2026-10-30 |
 | [0010](0010-elasticsearch-for-search.md) | Elasticsearch for search | Accepted | 2026-10-30 |
 | [0011](0011-deploy-later-build-deployable-now.md) | Deploy later, build deployable images from the start | Accepted | 2026-10-30 |
-| [0012](0012-trunk-based-development-with-small-squash-merged-prs.md) | Trunk-based development with small, squash-merged pull requests | Accepted | 2026-11-02 |
+| [0012](0012-trunk-based-development-with-small-squash-merged-prs.md) | Trunk-based development with small, squash-merged pull requests | Accepted (size exception amended by 0020) | 2026-11-02 |
 | [0013](0013-test-strategy-and-quality-gate.md) | Test strategy and quality gate | Accepted | 2026-11-02 |
 | [0014](0014-code-style-formatting-and-null-safety.md) | Code style, formatting and null safety | Accepted | 2026-11-02 |
 | [0015](0015-package-by-feature.md) | Package by feature | Accepted | 2026-11-02 |
@@ -23,5 +23,6 @@ Each important decision is recorded as an ADR: the context, the decision, its co
 | [0017](0017-apache-2-license.md) | Apache License 2.0 | Accepted | 2026-11-03 |
 | [0018](0018-reactive-gateway-webflux.md) | Reactive gateway (Spring Cloud Gateway on WebFlux) | Accepted | 2026-11-06 |
 | [0019](0019-flyway-database-migrations.md) | Flyway for database migrations | Accepted | 2026-11-06 |
+| [0020](0020-merge-gate.md) | Merge gate: GitHub-enforced, App-based reviews, owner approval for risky PRs | Accepted | 2026-11-07 |
 
 Template: [template.md](template.md).

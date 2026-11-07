@@ -21,6 +21,8 @@ The method follows the _AI for Software Engineers Guide_ (Yehia Tech): plan the 
 
 Effort is never below high. The CI merge gate is a GitHub Action, not an agent.
 
+**Two runtimes, for separation of duties:** the Code Reviewer, the Security Engineer and the DBA run under their own Linux user (`multica-reviewer`), which holds the key of the `pixora-review` GitHub App: the only identity whose approval the merge gate accepts. Every other agent runs under `multica-agent` and can't approve anything ([ADR-0020](../docs/decisions/0020-merge-gate.md)).
+
 ## 2. How work moves
 
 Two kinds of issues move on the board: the **story** (what the owner asked for) and its **sub-issues** (one per PR).
@@ -59,19 +61,19 @@ flowchart LR
 
 **A sub-issue:**
 
-| Column      | Owner              | Skill                                                | Leaves the column when                                                    |
-| ----------- | ------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------- |
-| Grooming    | Engineer           | [groom-task](skills/groom-task/SKILL.md)             | The task has steps with success criteria and fits in one PR (≤ 400 lines) |
-| In progress | Engineer           | [implement-task](skills/implement-task/SKILL.md)     | The PR is open and CI is green                                            |
-| Review      | Code Reviewer      | [code-review-task](skills/code-review-task/SKILL.md) | Approved (label `ai-approved`) or sent back                               |
-| Merge       | Merge gate / owner |                                                      | The PR is merged                                                          |
-| Done        | Engineer           | [finalize-task](skills/finalize-task/SKILL.md)       | Follow-ups recorded, docs and lessons handled                             |
+| Column      | Owner                | Skill                                                | Leaves the column when                                                                              |
+| ----------- | -------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Grooming    | Engineer             | [groom-task](skills/groom-task/SKILL.md)             | The task has steps with success criteria and fits in one PR (≤ 400 lines)                           |
+| In progress | Engineer             | [implement-task](skills/implement-task/SKILL.md)     | The PR is open and CI is green                                                                      |
+| Review      | Code Reviewer        | [code-review-task](skills/code-review-task/SKILL.md) | Approved through the `pixora-review` App (with Security and DBA where required), or sent back       |
+| Merge       | Merge gate (+ owner) |                                                      | Auto-merge merges the PR once the `merge-gate` check is green ([merge gate](../docs/merge-gate.md)) |
+| Done        | Engineer             | [finalize-task](skills/finalize-task/SKILL.md)       | Follow-ups recorded, docs and lessons handled                                                       |
 
 **The owner's checkpoints:**
 
 1. **Every story** is approved before planning (Backlog → Ready).
 2. **A plan** is approved only when it creates an ADR or changes an API or event contract.
-3. **Every PR the gate won't merge automatically** (migrations, security, dependencies, CI, large PRs): the owner goes through the guide's "own it" checklist and merges by hand.
+3. **Every PR the gate won't merge automatically** (migrations, security, dependencies, CI, large PRs, the agents' own rules, and every PR during the pilot): the owner goes through the guide's "own it" checklist posted on the PR and approves the `owner-approval` step with one tap; auto-merge does the rest.
 
 **Review loop:** at most two rounds with the same engineer. A third round goes to the senior engineer for that side; if the senior's PR also fails two rounds, the task goes to the owner.
 
@@ -105,7 +107,7 @@ Each skill is a folder with a `SKILL.md`: a name, a description that says when t
 ## 4. Where this differs from the guide, and why
 
 - **The PR is opened by implement-task, not finalize-task.** CI and the review run on the PR, so it has to exist before review. finalize-task runs after the merge instead.
-- **The merge is done by a deterministic merge gate, not by an agent.** Low-risk PRs merge automatically when every check passes and the Reviewer approved; everything else waits for the owner, who uses the guide's "own it" checklist (posted on the PR by the gate).
+- **The merge is done by a deterministic merge gate, not by an agent.** Low-risk PRs merge automatically when every check passes and the `pixora-review` App approved; everything else waits for the owner's approval, given after the guide's "own it" checklist (posted on the PR by the gate). Details: [merge-gate.md](../docs/merge-gate.md).
 - **Plans are approved by the owner only when they create an ADR or change a contract**, instead of every plan. Stories are always approved, so nothing gets built that the owner didn't ask for.
 - **A QA stage after the last PR.** The guide reviews each change; Pixora also checks each finished story as a whole on the running system, because a story spans several PRs and repos.
 

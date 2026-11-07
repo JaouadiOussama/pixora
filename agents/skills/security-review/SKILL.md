@@ -57,7 +57,7 @@ The Code Reviewer mentions you when a PR touches authentication, authorization, 
 
 ## Findings
 
-Post them on the PR in the code-review-task format, each with a **severity**:
+Write them in the code-review-task format, each with a **severity**, and submit them as a GitHub review from the `pixora-review` App with `--role security` (`pixora-review submit --repo <repo> --pr <pr> --role security --verdict approve|request-changes --body-file review.md`). The merge gate requires your approval on the head commit for security paths, dependency changes and upload handling. Severities:
 
 | Severity | Meaning                                                                          | Effect                                                 |
 | -------- | -------------------------------------------------------------------------------- | ------------------------------------------------------ |

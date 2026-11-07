@@ -45,4 +45,4 @@ Pixora isn't deployed yet, but migrations are written as if it were:
 5. No cross-service references, no data from another service copied without an event that keeps it updated.
 6. The migration was not edited after merge; the version number is the next free one.
 
-Findings use the code-review-task format (`[blocking]`, `[suggestion]`, `[question]`), posted on the PR, with a summary on the sub-issue for the Reviewer.
+Findings use the code-review-task format (`[blocking]`, `[suggestion]`, `[question]`), submitted as a GitHub review from the `pixora-review` App with `--role dba` (`pixora-review submit --repo <repo> --pr <pr> --role dba --verdict approve|request-changes --body-file review.md`), with a summary on the sub-issue for the Reviewer. The merge gate requires your approval on the head commit for every migration.

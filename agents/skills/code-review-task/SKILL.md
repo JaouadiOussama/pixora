@@ -37,7 +37,7 @@ Go through the whole diff, file by file, and check:
 
 ## Verdict
 
-Write the review as **one PR comment** (the PR is authored by the same GitHub account, so use a comment, not a GitHub "review"), with each finding as:
+Write the review in a file (`review.md`), with each finding as:
 
 ```markdown
 **[blocking]** `ProfileService.java:42`: <what is wrong>. <why, with a link to the rule/doc>. <what to do>.
@@ -45,10 +45,17 @@ Write the review as **one PR comment** (the PR is authored by the same GitHub ac
 **[question]** ...
 ```
 
-Then:
+Submit it as a **GitHub review from the `pixora-review` App**, the only approval the merge gate accepts ([merge-gate.md](../../../docs/merge-gate.md)). Never use labels or comments as an approval.
 
-- **Approve** when there are no blocking findings: add the label `ai-approved` (`gh pr edit <pr> --add-label ai-approved`), comment "Approved" on the sub-issue and move it to Merge (`merging`). Suggestions may stay open; the engineer may turn them into issues.
-- **Send back** when there is at least one blocking finding: remove `ai-approved` if present, post the findings, and route by `review_round`:
+```bash
+pixora-review submit --repo <repo> --pr <pr> --role code-reviewer \
+  --verdict approve|request-changes --body-file review.md
+```
+
+The review is attached to the PR's current head commit; a later push voids it. Then:
+
+- **Approve** (`--verdict approve`) when there are no blocking findings and every specialist you asked for has approved: comment "Approved" on the sub-issue and move it to Merge (`merging`). The merge gate does the rest: it merges, or waits for the owner. Suggestions may stay open; the engineer may turn them into issues.
+- **Send back** (`--verdict request-changes`) when there is at least one blocking finding, and route by `review_round`:
   - round 1 → assign the engineer, move to In progress.
   - round 2 → assign the **senior engineer** for that side, move to In progress, and say on the sub-issue that it was escalated and why.
   - the senior's second failed round → assign the **owner**, move to Blocked, and summarize what keeps failing.

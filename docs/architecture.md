@@ -1,6 +1,6 @@
 # Architecture
 
-Status: **stage 1 complete.** The few points still open are listed in [section 10](#10-pending). How code is written and merged: [engineering-guidelines.md](engineering-guidelines.md) and [conventions.md](conventions.md).
+Status: **stage 1 complete.** How code is written and merged: [engineering-guidelines.md](engineering-guidelines.md), [conventions.md](conventions.md) and [merge-gate.md](merge-gate.md).
 
 ## 1. Overview
 

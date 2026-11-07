@@ -31,6 +31,7 @@ Then, before pushing:
    - Title: Conventional Commit with the issue key: `feat(profile): create the profile on first request (PIX-14)`.
    - Body: the repo's PR template, filled in: **Goal** (one sentence), **Issue**, **Out of scope**, **How it was tested** (the tests from the grooming comment), **Notes for the reviewer** (risks, trade-offs, follow-up issues).
    - Commits carry `Co-authored-by: Claude <noreply@anthropic.com>`.
+   - Turn on auto-merge right away: `gh pr merge <pr> --auto --squash`. GitHub merges only when every required check, including the merge gate, is green ([merge-gate.md](../../../docs/merge-gate.md)); you never merge yourself.
 9. **Wait for CI** (`gh pr checks <pr> --watch`). On a failure, read the log, reproduce locally, fix, push. After **three** failed attempts on the same check, stop: comment on the sub-issue with what you tried, move it to Blocked and mention the Tech Lead.
 10. **Hand over to review:** comment on the sub-issue with the PR link and a two-line summary, set the metadata key `review_round` to `1`, move it to Review (`in_review`) and assign it to the Code Reviewer.
 
