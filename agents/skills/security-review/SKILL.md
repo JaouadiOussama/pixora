@@ -70,4 +70,4 @@ Give the attack in one or two sentences ("user A can delete user B's comment by 
 
 ## Threat models
 
-For each new flow (sign-up/login, upload, feed, search...) keep `docs/security/<flow>.md` in the hub: the assets, the entry points, the threats (STRIDE), the controls in place and the open risks. Create or update it through a hub docs sub-issue when a plan adds or changes a flow; review it when you review that flow's PRs.
+For each new flow (sign-up/login, upload, feed, search...) keep `docs/security/<flow>.md` in the hub: the assets, the entry points, the threats (STRIDE), the controls in place and the open risks. Create or update it through a hub docs sub-issue when a plan adds or changes a flow: you write the full content in the sub-issue and the Architect opens the hub PR from it (your runtime has no push access by design); then review that PR, and check the model again when you review that flow's PRs.

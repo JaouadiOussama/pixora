@@ -26,7 +26,7 @@ The gate applies **separation of duties**: whoever writes the code can't approve
 
 ## 3. Layer 2: approvals from the `pixora-review` App
 
-- A **GitHub App** named `pixora-review` is installed on the Pixora repositories with _Pull requests: write_ and _Contents: read_. To GitHub it is a separate reviewer.
+- A **GitHub App** named `pixora-review` is installed on the Pixora repositories with _Pull requests: write_ and _Contents: read_, plus read access to _Code scanning alerts_, _Dependabot alerts_ and _Secret scanning alerts_ for the Security Engineer's triage. It has no write access to code, so the reviewers can't push. To GitHub it is a separate reviewer.
 - The **Code Reviewer**, the **Security Engineer** and the **DBA** run on their own Multica runtime, under a separate Linux user (`multica-reviewer`) that holds the App's private key. The coding agents run under `multica-agent` and can't read it.
 - They submit their verdict as a real GitHub review (Approve, Request changes or Comment) with the `pixora-review` command, which signs in as the App:
 

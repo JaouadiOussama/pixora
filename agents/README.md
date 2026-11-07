@@ -1,6 +1,6 @@
 # The AI team
 
-Pixora is built by a team of AI agents running in a self-hosted [Multica](https://multica.ai) workspace, with the repository owner approving what gets built and reviewing what merges. This folder is the team's source of truth: the skills each agent follows and (soon) each agent's instructions. They are reviewed and versioned like code, then loaded into Multica.
+Pixora is built by a team of AI agents running in a self-hosted [Multica](https://multica.ai) workspace, with the repository owner approving what gets built and reviewing what merges. This folder is the team's source of truth: each agent's role ([roles/](roles/README.md)), the skills they follow ([skills/](skills/)) and the context every agent shares ([workspace-context.md](workspace-context.md)). They are reviewed and versioned like code, then loaded into Multica.
 
 The method follows the _AI for Software Engineers Guide_ (Yehia Tech): plan the project in `docs/`, write rules (`CLAUDE.md`) and skills once, run every task through the same skills in the same order, and keep a person responsible for what merges.
 
@@ -19,7 +19,7 @@ The method follows the _AI for Software Engineers Guide_ (Yehia Tech): plan the 
 | QA Engineer               | Sonnet, high   | Checks every finished story on the running system against its acceptance criteria, owns the Playwright end-to-end tests, triages nightly end-to-end failures. |
 | Senior Backend / Frontend | Opus, high     | Backup: takes over a single task after two failed review rounds.                                                                                              |
 
-Effort is never below high. The CI merge gate is a GitHub Action, not an agent.
+Effort is never below high. The CI merge gate is a GitHub Action, not an agent. Each agent's instructions, model, runtime and skills: [roles/](roles/README.md).
 
 **Two runtimes, for separation of duties:** the Code Reviewer, the Security Engineer and the DBA run under their own Linux user (`multica-reviewer`), which holds the key of the `pixora-review` GitHub App: the only identity whose approval the merge gate accepts. Every other agent runs under `multica-agent` and can't approve anything ([ADR-0020](../docs/decisions/0020-merge-gate.md)).
 
@@ -96,13 +96,13 @@ Each skill is a folder with a `SKILL.md`: a name, a description that says when t
 
 **Role skills** (knowledge, used alongside the workflow skills):
 
-| Skill                                                | Used by                              |
-| ---------------------------------------------------- | ------------------------------------ |
-| [spring-backend](skills/spring-backend/SKILL.md)     | Backend engineers, Reviewer          |
-| [angular-frontend](skills/angular-frontend/SKILL.md) | Frontend engineers, Reviewer         |
-| [postgres-flyway](skills/postgres-flyway/SKILL.md)   | DBA, backend engineers, Reviewer     |
-| [security-review](skills/security-review/SKILL.md)   | Security Engineer, Reviewer          |
-| [contract-first](skills/contract-first/SKILL.md)     | Everyone who touches an API or event |
+| Skill                                                | Used by                                                                                                 |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| [spring-backend](skills/spring-backend/SKILL.md)     | Backend engineers (and senior), Code Reviewer, Security Engineer, DBA                                   |
+| [angular-frontend](skills/angular-frontend/SKILL.md) | Frontend engineers (and senior), Code Reviewer, Security Engineer                                       |
+| [postgres-flyway](skills/postgres-flyway/SKILL.md)   | DBA, backend engineers (and senior), Code Reviewer                                                      |
+| [security-review](skills/security-review/SKILL.md)   | Security Engineer, Code Reviewer                                                                        |
+| [contract-first](skills/contract-first/SKILL.md)     | Everyone who touches an API or event: Tech Lead, Architect, engineers, Code Reviewer, Security Engineer |
 
 ## 4. Where this differs from the guide, and why
 
@@ -113,11 +113,7 @@ Each skill is a folder with a `SKILL.md`: a name, a description that says when t
 
 ## 5. Rules for every agent
 
-- **Read before you write:** the repo's `CLAUDE.md`, then the hub docs it points to. The hub is checked out next to the repo you work in (`multica repo checkout https://github.com/JaouadiOussama/pixora`).
-- **One task = one goal = one PR.** Anything else you notice becomes a new issue.
-- **Stop and ask** instead of guessing: unclear acceptance criteria go to the Product Owner, design questions to the Tech Lead, anything that contradicts the docs to the Tech Lead (who involves the Architect).
-- **Never** print, commit or paste a secret. Never weaken a check, a test or a rule to make CI pass.
-- **The same mistake twice becomes a rule:** finalize-task proposes it for the repo's `CLAUDE.md` (in its own PR).
+The rules every agent shares (where the truth is, how to work, how to comment, the stop condition for agent-to-agent loops) are in [workspace-context.md](workspace-context.md), which Multica gives to every agent on every run. Keeping them in one place means they can't drift apart between agents.
 
 ## 6. Board status keys
 
