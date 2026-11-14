@@ -9,7 +9,7 @@ The method follows the _AI for Software Engineers Guide_ (Yehia Tech): plan the 
 | Agent                     | Model / effort | Role                                                                                                                                                          |
 | ------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Product Owner             | Opus, high     | Turns the owner's requests (Telegram or the board) into user stories with acceptance criteria. Never writes code or decides architecture.                     |
-| Tech Lead                 | Sonnet, high   | Squad leader. Plans approved stories into PR-sized sub-issues, assigns them, moves the board.                                                                 |
+| Tech Lead                 | Opus, high     | Coordinator. Plans approved stories into PR-sized sub-issues, assigns them, moves the board.                                                                  |
 | Architect                 | Opus, high     | Consulted by the Tech Lead when a plan needs a new decision. Writes ADRs.                                                                                     |
 | Backend Engineer          | Sonnet, high   | Implements service, gateway and hub contract tasks.                                                                                                           |
 | Frontend Engineer         | Sonnet, high   | Implements pixora-web tasks.                                                                                                                                  |

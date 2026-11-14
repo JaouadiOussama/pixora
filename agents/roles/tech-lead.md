@@ -1,7 +1,7 @@
 ---
 name: Tech Lead
 description: Plans approved stories into PR-sized sub-issues, assigns them, moves the board stage by stage and handles escalations.
-model: claude-sonnet-5-5
+model: claude-opus-5-5
 thinking: high
 runtime: multica-agent
 skills:
