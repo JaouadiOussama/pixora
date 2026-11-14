@@ -45,18 +45,19 @@ The review loop and the agents' roles are in [agents/README.md](../agents/README
   fix(feed): skip posts already in the timeline (PIX-31)
   ```
 
-  | Type | Use for |
-  |---|---|
-  | `feat` | A new behaviour for users or API clients |
-  | `fix` | A bug fix |
-  | `refactor` | A code change with no change in behaviour |
-  | `test` | Tests only |
-  | `docs` | Documentation only |
-  | `build` | Build files, dependencies, Docker images |
-  | `ci` | CI workflows |
-  | `chore` | Anything else that changes no behaviour (config, tooling) |
+  | Type       | Use for                                                   |
+  | ---------- | --------------------------------------------------------- |
+  | `feat`     | A new behaviour for users or API clients                  |
+  | `fix`      | A bug fix                                                 |
+  | `refactor` | A code change with no change in behaviour                 |
+  | `test`     | Tests only                                                |
+  | `docs`     | Documentation only                                        |
+  | `build`    | Build files, dependencies, Docker images                  |
+  | `ci`       | CI workflows                                              |
+  | `chore`    | Anything else that changes no behaviour (config, tooling) |
 
   The scope is the feature or area (`auth`, `profile`, `feed`, `outbox`, `contracts`...). A breaking API or event change adds `!` after the scope (`feat(posts)!: ...`) and explains the break in the body.
+
 - **Authorship:** commits are authored by the repository owner. Work done by an AI agent carries a `Co-authored-by: Claude <noreply@anthropic.com>` trailer.
 - **No releases yet.** Images are tagged `sha-<commit>` and `main` ([deployment.md](deployment.md)). Conventional Commits keep the option to generate versions and changelogs automatically (release-please) when releases start.
 
@@ -73,11 +74,11 @@ The review loop and the agents' roles are in [agents/README.md](../agents/README
 
 Size = lines added + lines deleted, **tests included**. Generated code (for example `src/app/api/` in pixora-web), lockfiles, snapshots and binary files are not counted. CI measures it on every PR.
 
-| Size | What happens |
-|---|---|
-| **≤ 400 lines** | Normal. Can merge automatically if every other gate passes. |
-| **401–800 lines** | CI adds the `size/L` label. Never merges automatically; it needs the owner's approval ([merge gate](merge-gate.md)). |
-| **> 800 lines** | CI fails. The PR must be split. In rare justified cases (a project scaffold, a mass rename) the owner temporarily switches off the size check in the ruleset ([ADR-0020](decisions/0020-merge-gate.md)). |
+| Size              | What happens                                                                                                                                                                                             |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **≤ 400 lines**   | Normal. Can merge automatically if every other gate passes.                                                                                                                                              |
+| **401–800 lines** | CI adds the `size/L` label. Never merges automatically; it needs the owner's approval ([merge gate](merge-gate.md)).                                                                                     |
+| **> 800 lines**   | CI fails. The PR must be split. In rare justified cases (a project scaffold, a mass rename) the owner temporarily switches off the size check in the ruleset ([ADR-0020](decisions/0020-merge-gate.md)). |
 
 Why: review quality drops quickly as diffs grow. Google's engineering practices treat ~100 lines as a reasonable change and ~1,000 as usually too large, and the SmartBear/Cisco code review study found reviews lose effectiveness beyond 200–400 lines.
 
@@ -103,13 +104,13 @@ Every repo has a PR template with:
 
 **Backend (each Spring Boot service)**
 
-| Layer | What it tests | Tools | Maven phase |
-|---|---|---|---|
-| **Unit** (most tests) | Domain logic and services, without Spring | JUnit Jupiter (as managed by Spring Boot), AssertJ, Mockito | `test` (Surefire), classes named `*Test` |
-| **Slice** | One layer with a minimal Spring context: web layer, repositories | `@WebMvcTest` + MockMvc, `@DataJpaTest` | `test`, `*Test` |
-| **Integration** | The service with real infrastructure: PostgreSQL, Kafka, Redis, Elasticsearch, Keycloak, SeaweedFS | `@SpringBootTest` + Testcontainers + `@ServiceConnection` | `verify` (Failsafe), classes named `*IT` |
-| **Contract** | HTTP responses match the hub's OpenAPI spec; published and consumed events match the AsyncAPI schemas | An OpenAPI / JSON Schema validator in tests | `verify`, `*IT` |
-| **Architecture** | Layout and dependency rules ([conventions.md](conventions.md#2-java-code-layout)) | ArchUnit | `test`, `*Test` |
+| Layer                 | What it tests                                                                                         | Tools                                                       | Maven phase                              |
+| --------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------- |
+| **Unit** (most tests) | Domain logic and services, without Spring                                                             | JUnit Jupiter (as managed by Spring Boot), AssertJ, Mockito | `test` (Surefire), classes named `*Test` |
+| **Slice**             | One layer with a minimal Spring context: web layer, repositories                                      | `@WebMvcTest` + MockMvc, `@DataJpaTest`                     | `test`, `*Test`                          |
+| **Integration**       | The service with real infrastructure: PostgreSQL, Kafka, Redis, Elasticsearch, Keycloak, SeaweedFS    | `@SpringBootTest` + Testcontainers + `@ServiceConnection`   | `verify` (Failsafe), classes named `*IT` |
+| **Contract**          | HTTP responses match the hub's OpenAPI spec; published and consumed events match the AsyncAPI schemas | An OpenAPI / JSON Schema validator in tests                 | `verify`, `*IT`                          |
+| **Architecture**      | Layout and dependency rules ([conventions.md](conventions.md#2-java-code-layout))                     | ArchUnit                                                    | `test`, `*Test`                          |
 
 - **Real engines only.** Integration tests never use H2 or other in-memory stand-ins; they hide bugs that only appear on the real database or broker.
 - Testcontainers containers are started **once per test JVM** and shared by the test classes (singleton container pattern), so the suite stays fast.
@@ -139,12 +140,12 @@ Every repo has a PR template with:
 
 Every PR must pass the **SonarQube Cloud** quality gate (free for public repos), using the **Sonar way** rules on **new code**:
 
-| Condition | Threshold |
-|---|---|
-| Coverage of new code | **≥ 80%** (JaCoCo for Java, Vitest coverage for Angular) |
-| Duplicated lines in new code | ≤ 3% |
-| New issues (bugs, vulnerabilities, code smells) | 0 |
-| Security hotspots in new code | 100% reviewed |
+| Condition                                       | Threshold                                                |
+| ----------------------------------------------- | -------------------------------------------------------- |
+| Coverage of new code                            | **≥ 80%** (JaCoCo for Java, Vitest coverage for Angular) |
+| Duplicated lines in new code                    | ≤ 3%                                                     |
+| New issues (bugs, vulnerabilities, code smells) | 0                                                        |
+| Security hotspots in new code                   | 100% reviewed                                            |
 
 The gate is on new code, so nothing new merges untested, and old code never blocks a PR.
 
@@ -178,19 +179,19 @@ Formatting is done by tools and is **never discussed in review**.
 
 ## 6. Checks on every pull request
 
-| Check | Tool | Fails the PR when |
-|---|---|---|
-| PR title | Conventional Commits check | The title doesn't follow section 2 |
-| PR size | Line count (section 3) | Over 800 lines (401–800 only adds `size/L`) |
-| Formatting | Spotless, Prettier | A file isn't formatted |
-| Compile-time analysis | Error Prone + NullAway, TypeScript strict | Any error |
-| Lint | ESLint, Spectral (hub) | Any error |
-| Tests | Unit, slice, integration, contract, ArchUnit (Maven `verify`), Vitest | Any failing test |
-| Quality gate | SonarQube Cloud, Sonar way | Any condition in section 4 fails |
-| Code scanning | CodeQL | A new alert of high or critical severity |
-| New dependencies | GitHub dependency review | A newly added dependency has a known vulnerability |
-| Container image | Trivy | A fixable vulnerability of high or critical severity |
-| **Merge gate** (runs last) | `merge-gate` ([merge-gate.md](merge-gate.md)) | Required App reviews are missing, `main` is red, or the PR needs the owner and the owner hasn't approved yet |
+| Check                      | Tool                                                                  | Fails the PR when                                                                                            |
+| -------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| PR title                   | Conventional Commits check                                            | The title doesn't follow section 2                                                                           |
+| PR size                    | Line count (section 3)                                                | Over 800 lines (401–800 only adds `size/L`)                                                                  |
+| Formatting                 | Spotless, Prettier                                                    | A file isn't formatted                                                                                       |
+| Compile-time analysis      | Error Prone + NullAway, TypeScript strict                             | Any error                                                                                                    |
+| Lint                       | ESLint, Spectral (hub)                                                | Any error                                                                                                    |
+| Tests                      | Unit, slice, integration, contract, ArchUnit (Maven `verify`), Vitest | Any failing test                                                                                             |
+| Quality gate               | SonarQube Cloud, Sonar way                                            | Any condition in section 4 fails                                                                             |
+| Code scanning              | CodeQL                                                                | A new alert of high or critical severity                                                                     |
+| New dependencies           | GitHub dependency review                                              | A newly added dependency has a known vulnerability                                                           |
+| Container image            | Trivy                                                                 | A fixable vulnerability of high or critical severity                                                         |
+| **Merge gate** (runs last) | `merge-gate` ([merge-gate.md](merge-gate.md))                         | Required App reviews are missing, `main` is red, or the PR needs the owner and the owner hasn't approved yet |
 
 Also on, outside the PR checks:
 

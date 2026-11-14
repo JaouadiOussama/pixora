@@ -47,16 +47,16 @@ flowchart LR
 
 ## 2. Components
 
-| Component | Responsibility | Owns |
-|---|---|---|
-| **pixora-gateway** | The only public entry point. Acts as the BFF: OIDC login with Keycloak, server-side sessions, CSRF protection, `TokenRelay` to services. Routes `/api/**` to services and `/` to the Angular app (same origin). | Sessions (Redis) |
-| **Keycloak** | Identity provider: sign-up, login, logout, forgot password, password storage, the Pixora login theme. Realm config is kept as code in this repo. | Users' credentials (its own database) |
-| **user-service** | Profiles (created on the first authenticated request) and the follow graph. | `user` database |
-| **post-service** | Photo posts (1–10 photos, caption, hashtags), presigned upload URLs, photo checks, metadata removal and resizing. See [media.md](media.md). | `post` database, object storage (`uploads`, `media` buckets) |
-| **feed-service** | Builds and serves home feeds. Fan-out on write into Redis first; a pull path for very popular accounts comes later. | Feed timelines (Redis) |
-| **engagement-service** | Likes and comments, and their counters. | `engagement` database, counters (Redis) |
-| **search-service** | Username autocomplete and hashtag search. A read model built from events, with no database of its own. See [search.md](search.md). | Elasticsearch indexes |
-| **pixora-web** | Angular SPA. Holds **no tokens**. Calls the gateway with the session cookie. | — |
+| Component              | Responsibility                                                                                                                                                                                                  | Owns                                                         |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| **pixora-gateway**     | The only public entry point. Acts as the BFF: OIDC login with Keycloak, server-side sessions, CSRF protection, `TokenRelay` to services. Routes `/api/**` to services and `/` to the Angular app (same origin). | Sessions (Redis)                                             |
+| **Keycloak**           | Identity provider: sign-up, login, logout, forgot password, password storage, the Pixora login theme. Realm config is kept as code in this repo.                                                                | Users' credentials (its own database)                        |
+| **user-service**       | Profiles (created on the first authenticated request) and the follow graph.                                                                                                                                     | `user` database                                              |
+| **post-service**       | Photo posts (1–10 photos, caption, hashtags), presigned upload URLs, photo checks, metadata removal and resizing. See [media.md](media.md).                                                                     | `post` database, object storage (`uploads`, `media` buckets) |
+| **feed-service**       | Builds and serves home feeds. Fan-out on write into Redis first; a pull path for very popular accounts comes later.                                                                                             | Feed timelines (Redis)                                       |
+| **engagement-service** | Likes and comments, and their counters.                                                                                                                                                                         | `engagement` database, counters (Redis)                      |
+| **search-service**     | Username autocomplete and hashtag search. A read model built from events, with no database of its own. See [search.md](search.md).                                                                              | Elasticsearch indexes                                        |
+| **pixora-web**         | Angular SPA. Holds **no tokens**. Calls the gateway with the session cookie.                                                                                                                                    | —                                                            |
 
 The service boundaries above are the starting point; the exact list of endpoints and events is set in `contracts/`.
 
@@ -81,12 +81,12 @@ Keycloak, with the gateway acting as a **BFF**. Tokens never reach the browser. 
 - **Kafka in KRaft mode** (no ZooKeeper). One broker in dev. Decision: [ADR-0007](decisions/0007-kafka-kraft-with-transactional-outbox.md).
 - **Redis**, one server with a key prefix per owner. Redis is never the source of truth: everything in it can be rebuilt from PostgreSQL or Kafka. Decision: [ADR-0008](decisions/0008-redis.md).
 
-| Owner | Use | Key prefix (proposed) |
-|---|---|---|
-| gateway | HTTP sessions (Spring Session) | `pixora:gateway:session:` |
-| feed-service | Precomputed home timelines | `pixora:feed:` |
-| engagement-service | Like and comment counters (cache; PostgreSQL is the truth) | `pixora:engagement:` |
-| gateway (later) | Rate limiting | `pixora:gateway:ratelimit:` |
+| Owner              | Use                                                        | Key prefix (proposed)       |
+| ------------------ | ---------------------------------------------------------- | --------------------------- |
+| gateway            | HTTP sessions (Spring Session)                             | `pixora:gateway:session:`   |
+| feed-service       | Precomputed home timelines                                 | `pixora:feed:`              |
+| engagement-service | Like and comment counters (cache; PostgreSQL is the truth) | `pixora:engagement:`        |
+| gateway (later)    | Rate limiting                                              | `pixora:gateway:ratelimit:` |
 
 ## 6. Storage and search
 
@@ -105,4 +105,3 @@ Java 25 LTS (virtual threads), Spring Boot 4.1.2 for the services (Spring MVC on
 ## 9. Deployment
 
 Not deployed yet. Every repo builds multi-arch images (amd64 and arm64) to GitHub Container Registry from stage 2, and Pixora is deployed at the feed milestone. Workflow and go-live checklist: [deployment.md](deployment.md). Decision: [ADR-0011](decisions/0011-deploy-later-build-deployable-now.md).
-

@@ -32,9 +32,9 @@ sequenceDiagram
 
 ## 3. Compose files in this hub
 
-| File | Purpose |
-|---|---|
-| Dev Compose file | Builds or pulls everything for local work: services, Keycloak (dev mode), Kafka, Redis, PostgreSQL, SeaweedFS, Elasticsearch, Jaeger, Mailpit |
+| File                    | Purpose                                                                                                                                                    |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dev Compose file        | Builds or pulls everything for local work: services, Keycloak (dev mode), Kafka, Redis, PostgreSQL, SeaweedFS, Elasticsearch, Jaeger, Mailpit              |
 | Production Compose file | Pulls images by `sha-` tag only, Keycloak in production mode, security on everywhere, no Mailpit, secrets from an environment file that is never committed |
 
 ## 4. Go-live checklist (at the feed milestone)
@@ -42,6 +42,7 @@ sequenceDiagram
 Pixora is not shared publicly until every item is done.
 
 **Security**
+
 - [ ] HTTPS everywhere, with automatic certificates.
 - [ ] Keycloak in production mode with a fixed hostname; brute-force detection on; admin console not reachable from the internet.
 - [ ] Elasticsearch, Kafka, Redis, PostgreSQL and object storage reachable only on the internal network, with authentication on.
@@ -50,12 +51,14 @@ Pixora is not shared publicly until every item is done.
 - [ ] Sign-up is limited for the demo (invite or approval), because a public photo app attracts abusive content.
 
 **Operations**
+
 - [ ] Daily PostgreSQL backups, stored off the server, with one restore tested.
 - [ ] Disk alerts (Kafka, Elasticsearch and photos all grow).
 - [ ] A budget alert on the cloud account.
 - [ ] Updates: a documented way to move to a new `sha-` tag and to roll back.
 
 **Product**
+
 - [ ] A short privacy page (what is stored, how to delete an account).
 - [ ] Demo accounts with sample posts.
 

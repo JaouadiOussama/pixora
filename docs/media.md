@@ -8,10 +8,10 @@ Photos never pass through the gateway on the way in. post-service hands the brow
 
 ## 2. Buckets
 
-| Bucket | Content | Access |
-|---|---|---|
+| Bucket    | Content                                                            | Access                                                                                     |
+| --------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
 | `uploads` | Raw files just uploaded by the browser, keyed `uploads/<uploadId>` | Private. Written only through presigned PUT URLs. CORS allows the app's origin, `PUT` only |
-| `media` | Processed photos, keyed `media/<postId>/<index>-<size>.jpg` | Read through the gateway only (`/media/**`). Written only by post-service |
+| `media`   | Processed photos, keyed `media/<postId>/<index>-<size>.jpg`        | Read through the gateway only (`/media/**`). Written only by post-service                  |
 
 ## 3. Upload and create a post
 

@@ -6,23 +6,23 @@ Decisions: [ADR-0015](decisions/0015-package-by-feature.md) (code layout), [ADR-
 
 ## 1. Names at a glance
 
-| Thing | Convention | Example |
-|---|---|---|
-| Repository | `pixora-<name>`, kebab-case | `pixora-post-service` |
-| Maven coordinates | groupId `io.github.jaouadioussama.pixora`, artifactId = repository name | `io.github.jaouadioussama.pixora:pixora-post-service` |
-| Java root package | `io.github.jaouadioussama.pixora.<service>` | `io.github.jaouadioussama.pixora.post` |
-| Docker image | `ghcr.io/jaouadioussama/<repository>` | `ghcr.io/jaouadioussama/pixora-post-service:sha-1a2b3c4` |
-| Branch | `<type>/<issue-key>-<slug>` | `feat/PIX-12-signup-page` |
-| PR title / commit | Conventional Commits | `feat(auth): add the sign-up page (PIX-12)` |
-| API path | `/api/v1/<plural-noun>`, kebab-case | `/api/v1/posts/{postId}/comments` |
-| JSON field | camelCase | `createdAt`, `followerCount` |
-| Enum value / error code | UPPER_SNAKE_CASE | `PUBLIC`, `USERNAME_TAKEN` |
-| ID | UUIDv7, as a string in JSON | `"01934f6e-8b1c-7a3d-9e4f-2b5c6d7e8f90"` |
-| Kafka topic | `pixora.<service>.<aggregate>`; dead letters `<topic>.DLT` | `pixora.post.post`, `pixora.post.post.DLT` |
-| Event type | PascalCase, past tense | `PostCreated`, `UserFollowed` |
-| Redis key | `pixora:<owner>:...` | `pixora:feed:timeline:<userId>` |
-| Database | the service's short name | `post`, `user`, `engagement` |
-| Table and column | snake_case, singular table names | `outbox`, `processed_event`, `created_at` |
+| Thing                   | Convention                                                              | Example                                                  |
+| ----------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------- |
+| Repository              | `pixora-<name>`, kebab-case                                             | `pixora-post-service`                                    |
+| Maven coordinates       | groupId `io.github.jaouadioussama.pixora`, artifactId = repository name | `io.github.jaouadioussama.pixora:pixora-post-service`    |
+| Java root package       | `io.github.jaouadioussama.pixora.<service>`                             | `io.github.jaouadioussama.pixora.post`                   |
+| Docker image            | `ghcr.io/jaouadioussama/<repository>`                                   | `ghcr.io/jaouadioussama/pixora-post-service:sha-1a2b3c4` |
+| Branch                  | `<type>/<issue-key>-<slug>`                                             | `feat/PIX-12-signup-page`                                |
+| PR title / commit       | Conventional Commits                                                    | `feat(auth): add the sign-up page (PIX-12)`              |
+| API path                | `/api/v1/<plural-noun>`, kebab-case                                     | `/api/v1/posts/{postId}/comments`                        |
+| JSON field              | camelCase                                                               | `createdAt`, `followerCount`                             |
+| Enum value / error code | UPPER_SNAKE_CASE                                                        | `PUBLIC`, `USERNAME_TAKEN`                               |
+| ID                      | UUIDv7, as a string in JSON                                             | `"01934f6e-8b1c-7a3d-9e4f-2b5c6d7e8f90"`                 |
+| Kafka topic             | `pixora.<service>.<aggregate>`; dead letters `<topic>.DLT`              | `pixora.post.post`, `pixora.post.post.DLT`               |
+| Event type              | PascalCase, past tense                                                  | `PostCreated`, `UserFollowed`                            |
+| Redis key               | `pixora:<owner>:...`                                                    | `pixora:feed:timeline:<userId>`                          |
+| Database                | the service's short name                                                | `post`, `user`, `engagement`                             |
+| Table and column        | snake_case, singular table names                                        | `outbox`, `processed_event`, `created_at`                |
 
 ## 2. Java code layout
 
@@ -95,14 +95,14 @@ Rules for every HTTP API. [Spectral](https://github.com/stoplightio/spectral) ch
 - **The major version is in the path: `/api/v1/...`.** Spring Framework 7's API versioning resolves it. Only a **breaking change** creates `v2`; adding an optional field or a new endpoint is not breaking. The old version keeps working for a transition period, announced with the `Deprecation` (RFC 9745) and `Sunset` (RFC 8594) response headers.
 - **Routing:** the gateway receives `/api/v1/<resource>/...`, removes `/api` and forwards `/v1/<resource>/...` to the owning service. Starting map (the contracts are the source of truth):
 
-  | Public path | Service | Path seen by the service |
-  |---|---|---|
-  | `/api/v1/me`, `/api/v1/me/**` | user-service | `/v1/users/me`, `/v1/users/me/**` |
-  | `/api/v1/users/**` | user-service | `/v1/users/**` |
+  | Public path                                                             | Service                                                                         | Path seen by the service                                        |
+  | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+  | `/api/v1/me`, `/api/v1/me/**`                                           | user-service                                                                    | `/v1/users/me`, `/v1/users/me/**`                               |
+  | `/api/v1/users/**`                                                      | user-service                                                                    | `/v1/users/**`                                                  |
   | `/api/v1/posts/{postId}/likes/**`, `/api/v1/posts/{postId}/comments/**` | engagement-service (these routes are matched before the general `/posts` route) | `/v1/posts/{postId}/likes/**`, `/v1/posts/{postId}/comments/**` |
-  | `/api/v1/posts/**` | post-service | `/v1/posts/**` |
-  | `/api/v1/feed` | feed-service | `/v1/feed` |
-  | `/api/v1/search/**` | search-service | `/v1/search/**` |
+  | `/api/v1/posts/**`                                                      | post-service                                                                    | `/v1/posts/**`                                                  |
+  | `/api/v1/feed`                                                          | feed-service                                                                    | `/v1/feed`                                                      |
+  | `/api/v1/search/**`                                                     | search-service                                                                  | `/v1/search/**`                                                 |
 
   `/media/**` (photos) is not part of the versioned API ([media.md](media.md)). ADR-0006 mentions `/api/me`; its versioned path is `/api/v1/me`.
 
@@ -117,21 +117,21 @@ Rules for every HTTP API. [Spectral](https://github.com/stoplightio/spectral) ch
 
 ### 4.4 Status codes
 
-| Code | When |
-|---|---|
-| `200 OK` | Read or update with a response body |
-| `201 Created` | Created; the `Location` header points to the new resource |
-| `204 No Content` | Success with nothing to return (`DELETE`, relationship `PUT`) |
-| `400 Bad Request` | Malformed or invalid input; field errors are listed in `errors` |
-| `401 Unauthorized` | Not logged in (the gateway never redirects `/api/**` requests) |
-| `403 Forbidden` | Logged in but not allowed |
-| `404 Not Found` | Doesn't exist, or the caller isn't allowed to know it exists |
-| `409 Conflict` | A business rule conflict: username taken, already following |
-| `412 Precondition Failed` | The resource changed since the client read it (see 4.6) |
-| `422 Unprocessable Content` | An `Idempotency-Key` was reused with a different request body |
-| `428 Precondition Required` | An update without the required `If-Match` header |
-| `429 Too Many Requests` | Rate limited by the gateway (per user, in Redis), with a `Retry-After` header |
-| `500` / `503` | Unexpected error / a dependency is unavailable; never with internal details |
+| Code                        | When                                                                          |
+| --------------------------- | ----------------------------------------------------------------------------- |
+| `200 OK`                    | Read or update with a response body                                           |
+| `201 Created`               | Created; the `Location` header points to the new resource                     |
+| `204 No Content`            | Success with nothing to return (`DELETE`, relationship `PUT`)                 |
+| `400 Bad Request`           | Malformed or invalid input; field errors are listed in `errors`               |
+| `401 Unauthorized`          | Not logged in (the gateway never redirects `/api/**` requests)                |
+| `403 Forbidden`             | Logged in but not allowed                                                     |
+| `404 Not Found`             | Doesn't exist, or the caller isn't allowed to know it exists                  |
+| `409 Conflict`              | A business rule conflict: username taken, already following                   |
+| `412 Precondition Failed`   | The resource changed since the client read it (see 4.6)                       |
+| `422 Unprocessable Content` | An `Idempotency-Key` was reused with a different request body                 |
+| `428 Precondition Required` | An update without the required `If-Match` header                              |
+| `429 Too Many Requests`     | Rate limited by the gateway (per user, in Redis), with a `Retry-After` header |
+| `500` / `503`               | Unexpected error / a dependency is unavailable; never with internal details   |
 
 ### 4.5 Errors: RFC 9457 Problem Details
 

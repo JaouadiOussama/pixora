@@ -9,14 +9,14 @@ A new project should start on current, supported versions, so it doesn't begin w
 
 ## Decision
 
-| Technology | Version |
-|---|---|
-| Java | 25 LTS, with virtual threads |
-| Spring Boot (the six services) | 4.1.2 |
-| Spring Boot + Spring Cloud (gateway) | 4.0.9 + 2025.1.4 |
-| Angular | 22.2.4 |
-| Node.js | 26 LTS |
-| Infrastructure images | Latest stable, pinned to an exact version when the Compose file is written |
+| Technology                           | Version                                                                    |
+| ------------------------------------ | -------------------------------------------------------------------------- |
+| Java                                 | 25 LTS, with virtual threads                                               |
+| Spring Boot (the six services)       | 4.1.2                                                                      |
+| Spring Boot + Spring Cloud (gateway) | 4.0.9 + 2025.1.4                                                           |
+| Angular                              | 22.2.4                                                                     |
+| Node.js                              | 26 LTS                                                                     |
+| Infrastructure images                | Latest stable, pinned to an exact version when the Compose file is written |
 
 - The gateway stays on Spring Boot 4.0.x because Spring Cloud 2026.0 (the release for Boot 4.1) is not GA yet. It moves to Boot 4.1 with Spring Cloud 2026.0 through a Dependabot pull request once that is released.
 - Angular code uses the modern patterns only: standalone components, signals, zoneless change detection, Signal Forms and the built-in control flow. `conventions.md` will lock these in.

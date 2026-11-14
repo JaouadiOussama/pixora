@@ -8,10 +8,10 @@ search-service is a **read model**. It doesn't own any business data: it listens
 
 ## 2. Indexes
 
-| Alias | One document per | Main fields | Used for |
-|---|---|---|---|
-| `users` | User | `userId`, `username` (`search_as_you_type`), `displayName`, `followerCount` | Username autocomplete |
-| `posts` | Post | `postId`, `authorId`, `hashtags` (keyword), `createdAt` | Hashtag pages, hashtag counts |
+| Alias   | One document per | Main fields                                                                 | Used for                      |
+| ------- | ---------------- | --------------------------------------------------------------------------- | ----------------------------- |
+| `users` | User             | `userId`, `username` (`search_as_you_type`), `displayName`, `followerCount` | Username autocomplete         |
+| `posts` | Post             | `postId`, `authorId`, `hashtags` (keyword), `createdAt`                     | Hashtag pages, hashtag counts |
 
 Hashtag counts are not stored. They are computed with an aggregation on `posts`, so there is no counter to keep in sync.
 
@@ -46,11 +46,11 @@ sequenceDiagram
 
 ## 4. Queries
 
-| Endpoint (public path, through the gateway) | What it does |
-|---|---|
-| `GET /api/v1/search/users?q=` | Username autocomplete: prefix match, small typo tolerance, ranked by match quality then follower count |
-| `GET /api/v1/search/hashtags?q=` | Hashtag autocomplete, with the number of posts for each |
-| `GET /api/v1/search/hashtags/{tag}/posts` | Post ids for a hashtag, newest first, cursor-paged. The app then loads the posts from post-service |
+| Endpoint (public path, through the gateway) | What it does                                                                                           |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `GET /api/v1/search/users?q=`               | Username autocomplete: prefix match, small typo tolerance, ranked by match quality then follower count |
+| `GET /api/v1/search/hashtags?q=`            | Hashtag autocomplete, with the number of posts for each                                                |
+| `GET /api/v1/search/hashtags/{tag}/posts`   | Post ids for a hashtag, newest first, cursor-paged. The app then loads the posts from post-service     |
 
 ## 5. Rebuilding an index
 

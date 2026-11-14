@@ -52,7 +52,7 @@ JSON, described per topic in AsyncAPI (`contracts/asyncapi/`). Every event has t
   "eventVersion": 1,
   "occurredAt": "2026-10-30T09:15:00Z",
   "aggregateId": "8d2c...",
-  "payload": { }
+  "payload": {}
 }
 ```
 
@@ -68,10 +68,10 @@ JSON, described per topic in AsyncAPI (`contracts/asyncapi/`). Every event has t
 
 The final list is set in the AsyncAPI contracts, task by task.
 
-| Event | Producer | Main consumers |
-|---|---|---|
-| `UserProfileCreated`, `UserProfileUpdated` | user-service | search-service |
-| `UserFollowed`, `UserUnfollowed` | user-service | feed-service |
-| `PostCreated`, `PostDeleted` | post-service | feed-service, search-service, engagement-service |
-| `PostLiked`, `PostUnliked` | engagement-service | (counters; notifications in v2) |
-| `CommentAdded`, `CommentDeleted` | engagement-service | (counters; notifications in v2) |
+| Event                                      | Producer           | Main consumers                                   |
+| ------------------------------------------ | ------------------ | ------------------------------------------------ |
+| `UserProfileCreated`, `UserProfileUpdated` | user-service       | search-service                                   |
+| `UserFollowed`, `UserUnfollowed`           | user-service       | feed-service                                     |
+| `PostCreated`, `PostDeleted`               | post-service       | feed-service, search-service, engagement-service |
+| `PostLiked`, `PostUnliked`                 | engagement-service | (counters; notifications in v2)                  |
+| `CommentAdded`, `CommentDeleted`           | engagement-service | (counters; notifications in v2)                  |
