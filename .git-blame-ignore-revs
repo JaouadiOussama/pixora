@@ -1,0 +1,6 @@
+# Commits that only reformat files. git blame skips them:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+# GitHub uses this file automatically.
+
+# style: format the older docs with Prettier
+eb4968d4e580dc8c8322e19aaa80a290e3c85eb6
