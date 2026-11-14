@@ -2,10 +2,11 @@
 
 Pixora is a photo-sharing platform built as a set of Spring Boot microservices with an Angular frontend.
 
-This is the **hub repository**. It holds what all services share:
+This is the **hub repository**. It holds what all services share (agents working here start from [CLAUDE.md](CLAUDE.md)):
 
 - `docs/`: architecture, workflows and the decision records (ADRs)
 - `agents/`: the AI team: how a task moves through it, and the skills every agent follows
+- `templates/`: the starting `CLAUDE.md` for each kind of repository
 - `contracts/`: OpenAPI (sync APIs) and AsyncAPI (Kafka events). _(coming)_
 - `compose/`: Docker Compose for the full system. _(coming)_
 - `e2e/`: Playwright end-to-end tests. _(coming)_

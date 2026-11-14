@@ -59,7 +59,7 @@ The `merge-gate` check decides from the PR itself (title, size, files changed, a
 | All other required checks are green                               | More than 400 lines (`size/L`)                                                                                   |
 | `pixora-review` approved the head commit as `code-reviewer`       | Breaking change (`!` in the title)                                                                               |
 | Every extra role required below approved the head commit          | Type `ci` or `build`                                                                                             |
-| 400 lines or fewer                                                | Changes the agents' rules: `CLAUDE.md`, `.claude/**`, hub `agents/**`                                            |
+| 400 lines or fewer                                                | Changes the agents' rules: `CLAUDE.md`, `.claude/**`, hub `agents/**` and `templates/**`                         |
 | Type `feat`, `fix`, `refactor`, `test`, `docs` or `chore`, no `!` | Changes `.github/**`, hub `docs/**`, hub `contracts/**`                                                          |
 | No path from the right-hand column                                | Changes security code (see "Security paths" below)                                                               |
 | `main` is green                                                   | Adds or changes a database migration ([ADR-0019](decisions/0019-flyway-database-migrations.md))                  |
