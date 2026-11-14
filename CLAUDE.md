@@ -15,7 +15,15 @@ Start from `README.md`.
 
 ## Commands
 
-- Format the Markdown and YAML files you changed: `npx --yes prettier@3.9.10 --write <files>`. Some older docs aren't formatted yet; format only the files you change, so the diff stays about your change.
+Node 26 (`.nvmrc`) and Docker. Run `npm ci` once, then:
+
+| What                                          | Command                 |
+| --------------------------------------------- | ----------------------- |
+| Format everything                             | `npm run format`        |
+| Everything CI runs                            | `npm run check`         |
+| Formatting only                               | `npm run format:check`  |
+| Links and anchors in all Markdown (offline)   | `npm run lint:links`    |
+| Every Mermaid diagram renders (Chrome needed) | `npm run lint:diagrams` |
 
 ## Rules
 

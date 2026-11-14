@@ -1,0 +1,21 @@
+{
+  "name": "pixora-hub",
+  "private": true,
+  "description": "Checks for the Pixora hub: Markdown formatting, links and diagrams.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:links": "docker run --rm --init -v \"$PWD:/input:ro\" -w /input lycheeverse/lychee:0.24.2@sha256:e2d19e57cf6ab037026f20b8e449a1f30d9d7f81eef4194763aab2eab20bd28d --offline --include-fragments --no-progress --scheme file --root-dir /input --exclude-path node_modules '**/*.md'",
+    "lint:diagrams": "node scripts/check-diagrams.mjs",
+    "check": "npm run format:check && npm run lint:links && npm run lint:diagrams"
+  },
+  "devDependencies": {
+    "prettier": "3.9.10",
+    "puppeteer-core": "25.16.0"
+  }
+}
