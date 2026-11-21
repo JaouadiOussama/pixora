@@ -15,7 +15,7 @@
     "check": "npm run format:check && npm run lint:links && npm run lint:diagrams"
   },
   "devDependencies": {
-    "prettier": "3.9.10",
-    "puppeteer-core": "25.16.0"
+    "prettier": "3.10.1",
+    "puppeteer-core": "25.17.0"
   }
 }
